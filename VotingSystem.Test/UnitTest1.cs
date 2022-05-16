@@ -1,3 +1,5 @@
+using Moq;
+using System;
 using Xunit;
 
 namespace VotingSystem.Test
@@ -12,15 +14,51 @@ namespace VotingSystem.Test
         }
 
         public int Add(int a, int b) => testOne.Add(a, b);
+        public void Out(string msg) => testOne.Out(msg);
+    }
+
+    public class MathOneTests
+    {
+        [Fact]
+        public void MathOneAddsTwoNumbers()
+        {
+            var testOneMock = new Mock<ITestOne>();
+            testOneMock.Setup(x => x.Add(1,1)).Returns(2);
+            
+            var mathOne = new MathOne(testOneMock.Object);
+            Assert.Equal(2, mathOne.Add(1, 1));
+        }
+
+        [Fact]
+        public void VerifyFuncrionHasBeenCalled()
+        {
+            var testOneMock = new Mock<ITestOne>();
+            var msg = "Hello";
+
+            var mathOne = new MathOne(testOneMock.Object);
+            mathOne.Out(msg);
+
+            testOneMock.Verify(x => x.Out(msg), Times.Once);
+        }
+
+
     }
     public interface ITestOne
     {
         public int Add(int a, int b);
+        public void Out(string msg);
     }
 
     public class TestOne : ITestOne
     {
         public int Add(int a, int b) => a + b;
+
+        public void Out(string msg)
+        {
+            Console.WriteLine(msg);
+        }
+       
+
     }
 
    

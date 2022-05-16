@@ -68,21 +68,25 @@ namespace Sandbox
 
             var biggestAmountOfVotes = Counters.Max(x => x.Count);
 
-            var winners = Counters.Where(x => x.Count > biggestAmountOfVotes).ToList();
+            var winners = Counters.Where(x => x.Count == biggestAmountOfVotes).ToList();
 
           if (winners.Count == 1)
             {
                 var winner = winners.First();
+                winner.AddExcess(excess);
                 Console.WriteLine($"{winner.Name} Won");
             } else
-            
-            {
+            {           
 
                 if (winners.Count != Counters.Count)
-                { 
-                    //add excess
+                {
+                    var lowestAmountOfVotes = Counters.Min(x => x.Count);
+                    var losers = Counters.First(x => x.Count == lowestAmountOfVotes);
+                    losers.AddExcess(excess);
+                    
                 }
-                    string.Join(" -Draw- ", winners.Select(x => x.Name));
+               // Console.WriteLine($"{losers.Name} Lost!");
+                Console.WriteLine(string.Join(" -Draw- ", winners.Select(x => x.Name)));
                              
                 
             }
@@ -100,11 +104,12 @@ namespace Sandbox
     {
         static void Main(string[] args)
         {
-            var yes = new Counter("Yes", 4);
-            var no = new Counter("No", 4);
-            var maybe = new Counter("Maybe", 4);
+            var yes = new Counter("Yes", 6);
+            var no = new Counter("No", 2);
+            var maybe = new Counter("Maybe", 1);
+            var hopefuly = new Counter("Hopefully", 1);
 
-            var manager = new CounterManager( yes, no, maybe );
+            var manager = new CounterManager( yes, no, maybe, hopefuly);
             
             manager.AnnounceWinner();
           
